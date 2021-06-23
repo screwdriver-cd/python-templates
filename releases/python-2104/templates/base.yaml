@@ -36,7 +36,6 @@ config:
                     *http* ) export GIT_REPO="`echo $git_remote_url|cut -d"/" -f 4-5|sed "s/\.git//"`";;
                 esac
             }
-
             if [ "$GIT_REPO" = "" ]; then
                 determine_repo
                 echo "Git repo has been set to $GIT_REPO"
@@ -89,10 +88,10 @@ config:
                 env_handle.write('export PACKAGE_DIR\n')
             EOF
             . $SD_ARTIFACTS_DIR/env/package.env
-        -   config_preset: echo "Configuration preset handler"
-        -   update_version: $BASE_PYTHON -m screwdrivercd.version
-        -   end: echo "Ending ${SD_TEMPLATE_FULLNAME}"
-        -   teardown-store_artifacts: |
+        - config_preset: echo "Configuration preset handler"
+        - update_version: $BASE_PYTHON -m screwdrivercd.version
+        - end: echo "Ending ${SD_TEMPLATE_FULLNAME}"
+        - teardown-store_artifacts: |
             $BASE_PYTHON << EOF
             import glob
             import os
