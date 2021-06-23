@@ -2,10 +2,10 @@ shared:
     environment:
         PYTHON_BOOTSTRAP_SKIP_PYPIRUN: 'True'
         PYTHON_BOOTSTRAP_SKIP_SCREWDRIVERCD: 'True'
+    image: node:12
 
 jobs:
     publish_cmd:
-        image: docker.ouroath.com:4443/python/ylinux77
         steps:
             -   validate_bootstrap: sd-cmd validate -f sd-cmd/python_bootstrap.yaml
             -   validate_distro_env: sd-cmd validate -f sd-cmd/distro_env.yaml
@@ -20,7 +20,6 @@ jobs:
         requires: [~pr, ~commit]
 
     publish_templates:
-        image: docker.ouroath.com:4443/paas.ynodejs.images/node12-ylinux7-slim-sd:1-CURRENT
         environment:
             PYTHON_BOOTSTRAP_SKIP_PYPIRUN: True
             PYTHON_BOOTSTRAP_SKIP_SCREWDRIVERCD: True
@@ -34,4 +33,4 @@ jobs:
                 . $SD_ARTIFACTS_DIR/env/python_bootstrap.env
             - validate: $BASE_PYTHON ci_scripts/process_templates.py validate
             - publish: $BASE_PYTHON ci_scripts/process_templates.py publish
-        requires: [~pr, ~commit]
+        requires: [publish_cmd]
