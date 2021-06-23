@@ -15,4 +15,4 @@ deps = ['nodejs', 'npm']
 deps = []
 
 [tool.sdv4_installdeps.yum]
-deps = ['rh-nodejs12', 'rh-nodejs12-npm']
+deps = ['rh-nodejs12-npm']
