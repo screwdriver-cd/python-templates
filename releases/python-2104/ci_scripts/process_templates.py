@@ -44,11 +44,13 @@ def main():
     parser.add_argument('operation', default='validate', choices=['validate', 'publish'])
     args = parser.parse_args()
 
+    template_tag = os.environ.get('TEMPLATE_TAG', 'pre')
+    template_tags = ','.split(template_tag)
+
     for template in determine_template_file_list():
         os.environ['SD_TEMPLATE_PATH'] = str(template)
         print(f'Processing template: {os.environ["SD_TEMPLATE_PATH"]}')
         template_name = f'python-2104/{template_value("name")}'
-        template_tag = os.environ.get('TEMPLATE_TAG', 'pre')
         command = './node_modules/.bin/template-validate'
         if args.operation == 'publish':
             command = './node_modules/.bin/template-publish'
@@ -64,19 +66,20 @@ def main():
         if result.returncode != 0:
             print(f'The {args.operation} operation failed for the {os.environ["SD_TEMPLATE_PATH"]} template')
             # return result.returncode
-            continue
+            pass
 
         if args.operation == 'publish':
-            command = f'./node_modules/.bin/template-tag --name {template_name} --tag {template_tag}'
-            print(f'Running command: {command}')
-            try:
-                result = subprocess.run(shlex.split(command))
-            except FileNotFoundError:
-                print(f'The {command} script was not found')
-                return 1
-            if result.returncode != 0:
-                print(f'The {args.operation} operation failed for the {os.environ["SD_TEMPLATE_PATH"]} template')
-                return result.returncode
+            for tag in template_tags:
+                command = f'./node_modules/.bin/template-tag --name "{template_name}" --tag "{tag}"'
+                print(f'Running command: {command}')
+                try:
+                    result = subprocess.run(shlex.split(command))
+                except FileNotFoundError:
+                    print(f'The {command} script was not found')
+                    return 1
+                if result.returncode != 0:
+                    print(f'The {args.operation} operation failed for the {os.environ["SD_TEMPLATE_PATH"]} template')
+                    return result.returncode
         print('', flush=True)
     return 0
 
