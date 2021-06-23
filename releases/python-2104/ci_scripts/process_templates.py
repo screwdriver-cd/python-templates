@@ -79,7 +79,7 @@ def main():
                     print(f'The {command} script was not found')
                     return 1
                 if result.returncode != 0:
-                    print(f'The {args.operation} operation failed for the {os.environ["SD_TEMPLATE_PATH"]} template')
+                    print(f'The {args.operation} operation failed for the {template} template')
                     return result.returncode
         print('', flush=True)
     return 0
