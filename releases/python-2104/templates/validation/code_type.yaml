@@ -1,0 +1,36 @@
+# Copyright 2021, Oath Inc.
+# Licensed under the terms of the Apache 2.0 license.  See the LICENSE file in the project root for terms
+namespace: python-2104
+name: validate_type
+description: This step will review type annotations using the mypy tool
+version: 2021.6.23
+maintainer: 54983+dwighthubbard@users.noreply.github.com
+images:
+    manylinux2014: quay.io/pypa/manylinux2014_x86_64
+    manylinux2010: quay.io/pypa/manylinux2010_x86_64
+    manylinux1_32: quay.io/pypa/manylinux1_i686
+    manylinux1_64: quay.io/pypa/manylinux1_x86_64
+    ubuntu: ubuntu:latest
+config:
+    template: python-2104/base
+    order: [ begin, init_os, install_dependencies, set_package_env, config_preset, update_version, install_type_stubs, validate, end, teardown-store_artifacts ]
+    environment:
+        MYPY_ARGS: "--namespace-packages --ignore-missing-imports"
+        TYPE_CHECK_ENFORCING: True
+        TYPE_CHECK_REPORT_FORMAT: txt
+        TYPE_CHECK_SONARQUBE: false
+    steps:
+    - install_type_stubs:
+        locked: false
+        command: |
+            if [ ! -e "$SD_ARTIFACTS_DIR/logs" ]; then
+                mkdir -p "$SD_ARTIFACTS_DIR/logs"
+            fi
+            $BASE_PYTHON -m pip install -U mypy>=0.900,. 2>&1 | tee "$SD_ARTIFACTS_DIR/logs/mypy-install.log"
+            echo y|$BASE_PYTHON -m mypy --install-types $PACKAGE_DIR  2>&1 | tee $SD_ARTIFACTS_DIR/logs/mypy-install_types.log || /bin/true
+            if [ "$ORIG_PACKAGE_DIR" = "" ]; then
+                unset PACKAGE_DIR
+            fi
+    - validate:
+        locked: false
+        command: screwdrivercd_validate_type
