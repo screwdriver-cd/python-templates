@@ -43,8 +43,7 @@ jobs:
         environment:
             PYTHON_BOOTSTRAP_SKIP_PYPIRUN: True
             PYTHON_BOOTSTRAP_SKIP_SCREWDRIVERCD: True
-            TEMPLATE_DIR: templates
-            TEMPLATE_TAG: stable
+            TEMPLATE_DIR: './templates'
             TEMPLATES: packaging, utility, validation
         steps:
             - init_os: |
