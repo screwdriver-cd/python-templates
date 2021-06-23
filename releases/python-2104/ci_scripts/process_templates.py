@@ -63,7 +63,8 @@ def main():
             return 1
         if result.returncode != 0:
             print(f'The {args.operation} operation failed for the {os.environ["SD_TEMPLATE_PATH"]} template')
-            return result.returncode
+            # return result.returncode
+            continue
 
         if args.operation == 'publish':
             command = f'./node_modules/.bin/template-tag --name {template_name} --tag {template_tag}'
