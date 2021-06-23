@@ -1,0 +1,23 @@
+# Copyright 2021, Oath Inc.
+# Licensed under the terms of the Apache 2.0 license.  See the LICENSE file in the project root for terms
+namespace: python-2104
+name: version
+description: This step will review type annotations using the mypy tool
+version: 2021.6.23
+maintainer: 54983+dwighthubbard@users.noreply.github.com
+images:
+    manylinux2014: quay.io/pypa/manylinux2014_x86_64
+    manylinux2010: quay.io/pypa/manylinux2010_x86_64
+    manylinux1_32: quay.io/pypa/manylinux1_i686
+    manylinux1_64: quay.io/pypa/manylinux1_x86_64
+    ubuntu: ubuntu:latest
+config:
+    template: python-2104/base
+    order: [ begin, motd, init_os, install_dependencies, update_version, add_screwdriver_label, end, teardown-store_artifacts]
+    steps:
+        - update_version:
+            locked: false
+            command: screwdrivercd_version --ignore_meta --update_meta
+        - add_screwdriver_label:
+            locked: false
+            command: meta set label VERSION_`meta get package.version`||/bin/true

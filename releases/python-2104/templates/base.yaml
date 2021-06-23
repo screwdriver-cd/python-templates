@@ -21,6 +21,12 @@ config:
         -   init_os: |
                 sd-cmd exec python-2104/python_bootstrap
                 . /tmp/python_bootstrap.env||/bin/true
+        -   setup_deploy_keys: |
+                if [ ! -z "$GIT_DEPLOY_KEY" ]; then
+                    pypirun screwdrivercd screwdrivercd_ssh_setup
+                    eval "$(ssh-agent -s)"
+                    pypirun screwdrivercd screwdrivercd_github_deploykey
+                fi
         -   install_dependencies: $BASE_PYTHON -m screwdrivercd.installdeps
         -   determine_git_repo: |
                 determine_repo() {
