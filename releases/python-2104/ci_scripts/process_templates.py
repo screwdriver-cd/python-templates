@@ -74,7 +74,7 @@ def main():
                 command = f'./node_modules/.bin/template-tag --name "{template_name}" --tag "{tag}"'
                 print(f'Running command: {command}')
                 try:
-                    result = subprocess.run(shlex.split(command))
+                    result = subprocess.run(shlex.split(command), env={'SD_TEMPLATE_PATH': str(template)})
                 except FileNotFoundError:
                     print(f'The {command} script was not found')
                     return 1
