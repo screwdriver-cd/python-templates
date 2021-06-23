@@ -19,13 +19,12 @@ jobs:
             -   publish_installdeps: sd-cmd publish -f sd-cmd/installdeps.yaml -t stable
         requires: [~pr, ~commit]
 
-    publish_templates:
+    publish_base_template:
         image: quay.io/pypa/manylinux2014_x86_64
         environment:
             PYTHON_BOOTSTRAP_SKIP_PYPIRUN: True
             PYTHON_BOOTSTRAP_SKIP_SCREWDRIVERCD: True
             TEMPLATE_DIR: templates
-            # TEMPLATES: base.yaml, packaging, utility, validation
             TEMPLATES: base.yaml
         steps:
             - init_os: |
@@ -37,3 +36,21 @@ jobs:
             - validate: $BASE_PYTHON ci_scripts/process_templates.py validate
             - publish: $BASE_PYTHON ci_scripts/process_templates.py publish
         requires: [publish_cmd]
+
+    publish_templates:
+        image: quay.io/pypa/manylinux2014_x86_64
+        environment:
+            PYTHON_BOOTSTRAP_SKIP_PYPIRUN: True
+            PYTHON_BOOTSTRAP_SKIP_SCREWDRIVERCD: True
+            TEMPLATE_DIR: templates
+            TEMPLATES: base.yaml, packaging, utility, validation
+        steps:
+            - init_os: |
+                sd-cmd python-2104/python_bootstrap@stable
+                . $SD_ARTIFACTS_DIR/env/python_bootstrap.env
+            - install_dependencies: yum install -y rh-nodejs12-npm
+            - enable_npm_collection: source /opt/rh/rh-nodejs12/enable
+            - install: npm install screwdriver-template-main
+            - validate: $BASE_PYTHON ci_scripts/process_templates.py validate
+            - publish: $BASE_PYTHON ci_scripts/process_templates.py publish
+        requires: [publish_base_template]
