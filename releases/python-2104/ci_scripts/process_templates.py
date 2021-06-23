@@ -45,7 +45,7 @@ def main():
     args = parser.parse_args()
 
     template_tag = os.environ.get('TEMPLATE_TAG', 'pre')
-    template_tags = ','.split(template_tag)
+    template_tags = template_tag.split(',')
 
     for template in determine_template_file_list():
         os.environ['SD_TEMPLATE_PATH'] = str(template)
