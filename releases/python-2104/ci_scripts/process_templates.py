@@ -48,8 +48,8 @@ def main():
     template_tags = template_tag.split(',')
 
     for template in determine_template_file_list():
-        os.environ['SD_TEMPLATE_PATH'] = str(template)
-        print(f'Processing template: {os.environ["SD_TEMPLATE_PATH"]}')
+        # os.environ['SD_TEMPLATE_PATH'] = str(template)
+        print(f'Processing template: {str(template)}')
         template_name = f'python-2104/{template_value("name")}'
         command = './node_modules/.bin/template-validate'
         if args.operation == 'publish':
@@ -59,7 +59,7 @@ def main():
 
         print(f'Processing Template: {template_name} Running: {command}')
         try:
-            result = subprocess.run(shlex.split(command))
+            result = subprocess.run(shlex.split(command), env={'SD_TEMPLATE_PATH': str(template)})
         except FileNotFoundError:
             print(f'The {command} script was not found')
             return 1
