@@ -25,6 +25,7 @@ jobs:
             PYTHON_BOOTSTRAP_SKIP_PYPIRUN: True
             PYTHON_BOOTSTRAP_SKIP_SCREWDRIVERCD: True
             TEMPLATE_DIR: templates
+            TEMPLATE_TAG: stable
             TEMPLATES: base.yaml
         steps:
             - init_os: |
@@ -43,6 +44,7 @@ jobs:
             PYTHON_BOOTSTRAP_SKIP_PYPIRUN: True
             PYTHON_BOOTSTRAP_SKIP_SCREWDRIVERCD: True
             TEMPLATE_DIR: templates
+            TEMPLATE_TAG: stable
             TEMPLATES: base.yaml, packaging, utility, validation
         steps:
             - init_os: |
