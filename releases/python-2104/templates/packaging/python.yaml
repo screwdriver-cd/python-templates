@@ -3,7 +3,7 @@
 namespace: python-2104
 name: package_python
 description: Generate a python package using setuptools
-version: 2021.6.23
+version: '2021.6.23'
 maintainer: 54983+dwighthubbard@users.noreply.github.com
 images:
     manylinux2014: quay.io/pypa/manylinux2014_x86_64
