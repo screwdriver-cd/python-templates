@@ -39,7 +39,7 @@ jobs:
         requires: [publish_cmd]
 
     publish_templates:
-        image: ubuntu:20.04
+        image: ubuntu:21.04
         environment:
             PYTHON_BOOTSTRAP_SKIP_PYPIRUN: True
             PYTHON_BOOTSTRAP_SKIP_SCREWDRIVERCD: False
