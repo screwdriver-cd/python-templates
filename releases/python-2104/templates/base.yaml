@@ -49,8 +49,6 @@ config:
             import sys
             from pkg_resources import safe_name
             from setuptools.config import read_configuration
-
-
             def package_dir(conf_dict):
                 pdir = '.'
                 for dirname in ['src']:
@@ -61,16 +59,13 @@ config:
                     conf_dict = read_configuration("setup.cfg")
                 except distutils.errors.DistutilsFileError:
                     return pdir
-
                 conf_options = conf_dict.get('options', {})
                 conf_metadata = conf_dict.get('metadata', {})
                 if conf_options and conf_options.get('package_dir', {}):
                     pdir =  list(conf_options['package_dir'].values())[0]
                 elif pdir == '.' and 'name' in conf_metadata.keys() and os.path.exists(conf_metadata["name"]):
                     return conf_metadata['name']
-
                 return pdir
-
             conf_dict = {
                 'metadata': {
                     'name': 'unknown',
@@ -81,11 +76,9 @@ config:
                 conf_dict.update(read_configuration("setup.cfg"))
             except distutils.errors.DistutilsFileError:
                 logging.debug('The setup.cfg configuration file not found, cannot determine package name and version')
-
             artifact_dir = os.environ.get('SD_ARTIFACTS_DIR', 'artifacts')
             env_dir = f'{artifact_dir}/env'
             env_filename = f'{env_dir}/package.env'
-
             os.makedirs(env_dir, exist_ok=True)
             with open(env_filename, 'w') as env_handle:
                 env_handle.write(f'PACKAGE_NAME="{safe_name(conf_dict["metadata"]["name"])}"\n')
@@ -105,8 +98,6 @@ config:
             import os
             import shutil
             import sys
-
-
             def main():
                 CONFIGFILES = [
                     '.bandit.ini', 'bandit.ini',
@@ -116,18 +107,14 @@ config:
                 ] + glob.glob('*.ini')
                 if 'PYLINTRC' in os.environ.keys():
                     CONFIGFILES.append(os.environ['PYLINTRC'])
-
                 LOGFILES = glob.glob('*.log') + glob.glob('.tox/log/*.log') + glob.glob('.tox/*/log/*.log')
-
                 artifacts_dir = os.environ.get("SD_ARTIFACTS_DIR", ".")
                 config_dir = os.path.join(artifacts_dir, 'config')
                 log_dir = os.path.join(artifacts_dir, 'logs')
                 report_dir = os.path.join(artifacts_dir, 'reports')
-
                 os.makedirs(config_dir, exist_ok=True)
                 os.makedirs(log_dir, exist_ok=True)
                 os.makedirs(report_dir, exist_ok=True)
-
                 if os.path.exists('artifacts') and artifacts_dir != '.':
                     print(f'Copying artifacts -> {artifacts_dir}', flush=True)
                     try:
@@ -137,12 +124,10 @@ config:
                             shutil.copytree('artifacts', artifacts_dir)
                         except FileExistsError:
                             pass
-
                 for configfile in CONFIGFILES:
                     if os.path.exists(configfile):
                         print(f'Copying config file {configfile} -> {config_dir}', flush=True)
                         shutil.copy(configfile, os.path.join(config_dir, configfile))
-
                 for logfile in LOGFILES:
                     dirpath = os.path.dirname(logfile)
                     destdir = log_dir
