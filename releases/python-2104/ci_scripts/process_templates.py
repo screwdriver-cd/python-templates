@@ -48,7 +48,7 @@ def main():
         os.environ['SD_TEMPLATE_PATH'] = str(template)
         print(f'Processing template: {os.environ["SD_TEMPLATE_PATH"]}')
         template_name = f'python-2104/{template_value("name")}'
-        temmplate_tag = os.environ.get('TEMPLATE_TAG', 'pre')
+        template_tag = os.environ.get('TEMPLATE_TAG', 'pre')
         command = './node_modules/.bin/template-validate'
         if args.operation == 'publish':
             command = './node_modules/.bin/template-publish'
@@ -66,7 +66,7 @@ def main():
             return result.returncode
 
         if args.operation == 'publish':
-            command = f'./node_modules/.bin/template-tag --name {template_name} --tag {temmplate_tag}'
+            command = f'./node_modules/.bin/template-tag --name {template_name} --tag {template_tag}'
             try:
                 result = subprocess.run(shlex.split(command))
             except FileNotFoundError:
