@@ -1,6 +1,6 @@
 # Copyright 2021, Oath Inc.
 # Licensed under the terms of the Apache 2.0 license.  See the LICENSE file in the project root for terms
-namespace: python-2204
+namespace: python-2104
 name: base
 version: "2021.5.3"
 description: 'Base template definition for python-2104 namespace templates'
