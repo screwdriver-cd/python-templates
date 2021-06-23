@@ -98,12 +98,7 @@ config:
             import os
             import shutil
             import sys
-            CONFIGFILES = [
-                '.bandit.ini', 'bandit.ini',
-                '.coveragerc', 'coveragerc',
-                'MANIFEST.in', 'pyproject.toml', 'requirements.txt', 'setup.cfg', 'setup.py',
-                '.pylintrc', 'pylintrc', 'tox.ini'
-            ] + glob.glob('*.ini')
+            CONFIGFILES = ['.bandit.ini', 'bandit.ini', '.coveragerc', 'coveragerc', 'MANIFEST.in', 'pyproject.toml', 'requirements.txt', 'setup.cfg', 'setup.py', '.pylintrc', 'pylintrc', 'tox.ini'] + glob.glob('*.ini')
             if 'PYLINTRC' in os.environ.keys():
                 CONFIGFILES.append(os.environ['PYLINTRC'])
             LOGFILES = glob.glob('*.log') + glob.glob('.tox/log/*.log') + glob.glob('.tox/*/log/*.log')
