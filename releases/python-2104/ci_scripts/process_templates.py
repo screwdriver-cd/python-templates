@@ -11,7 +11,9 @@ import sys
 
 def template_value(key, filename=None):
     if not filename:
-        filename = os.environ['SD_TEMPLATE_PATH']
+        filename = os.environ.get('SD_TEMPLATE_PATH', None)
+        if not filename:
+            return
 
     with open(filename) as handle:
         for line in handle.readlines():
