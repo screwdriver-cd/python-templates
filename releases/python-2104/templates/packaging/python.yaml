@@ -20,7 +20,7 @@ config:
         PYROMA_MIN_SCORE: 8
         PACKAGE_TAG: True
         PACKAGE_TYPES: sdist,wheel
-    order: [ begin, motd, init_os, install_dependencies, update_version, package_code, check_packages, ]publish, tag_release, end, teardown-store_artifacts ]
+    order: [begin, motd, init_os, install_dependencies, update_version, package_code, check_packages, publish, tag_release, end, teardown-store_artifacts]
     secrets:
         - PYPI_USER
         - PYPI_PASSWORD
