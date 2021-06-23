@@ -50,7 +50,7 @@ def main():
     template_tags = template_tag.split(',')
 
     for template in determine_template_file_list():
-        # os.environ['SD_TEMPLATE_PATH'] = str(template)
+        os.environ['SD_TEMPLATE_PATH'] = str(template)
         print(f'Processing template: {str(template)}')
         template_namespace = template_value("namespace", filename=template)
         template_name = f'{template_namespace}/{template_value("name", filename=template)}'
@@ -62,7 +62,7 @@ def main():
 
         print(f'Processing Template: {template_name} Running: {command}')
         try:
-            result = subprocess.run(shlex.split(command), env={'SD_TEMPLATE_PATH': str(template)})
+            result = subprocess.run(shlex.split(command))
         except FileNotFoundError:
             print(f'The {command} script was not found')
             return 1
@@ -76,7 +76,7 @@ def main():
                 command = f'./node_modules/.bin/template-tag --name "{template_name}" --tag "{tag}"'
                 print(f'Running command: {command}')
                 try:
-                    result = subprocess.run(shlex.split(command), env={'SD_TEMPLATE_PATH': str(template)})
+                    result = subprocess.run(shlex.split(command))
                 except FileNotFoundError:
                     print(f'The {command} script was not found')
                     return 1
