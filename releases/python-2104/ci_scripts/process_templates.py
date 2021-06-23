@@ -50,7 +50,8 @@ def main():
     for template in determine_template_file_list():
         # os.environ['SD_TEMPLATE_PATH'] = str(template)
         print(f'Processing template: {str(template)}')
-        template_name = f'python-2104/{template_value("name")}'
+        template_namespace = template_value("namespace", filename=template)
+        template_name = f'{template_namespace}/{template_value("name", filename=template)}'
         command = './node_modules/.bin/template-validate'
         if args.operation == 'publish':
             command = './node_modules/.bin/template-publish'
