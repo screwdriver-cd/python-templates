@@ -29,7 +29,7 @@ config:
         - GIT_DEPLOY_KEY_PASSPHRASE
     order: [ begin, motd, init_os, install_dependencies, update_version, package_code, check_packages, ]publish, tag_release, end, teardown-store_artifacts ]
     steps:
-    - package_code: $BASE_PYTHON -m  screwdrivercd.packaging.build_python
-    - check_packages: $BASE_PYTHON -m screwdrivercd.validation.validate_package_quality
-    - publish: $BASE_PYTHON -m screwdrivercd.packaging.publish_python
-    - tag_release: $BASE_PYTHON -m screwdrivercd.repo.release
+        - package_code: $BASE_PYTHON -m  screwdrivercd.packaging.build_python
+        - check_packages: $BASE_PYTHON -m screwdrivercd.validation.validate_package_quality
+        - publish: $BASE_PYTHON -m screwdrivercd.packaging.publish_python
+        - tag_release: $BASE_PYTHON -m screwdrivercd.repo.release
