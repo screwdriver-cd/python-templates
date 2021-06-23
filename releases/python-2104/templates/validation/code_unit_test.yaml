@@ -25,71 +25,71 @@ config:
     steps:
         - validate: screwdrivercd_validate_unittest
         - teardown-add_test_metadata: |
-                $BASE_PYTHON -m pip install junitparser
-                $BASE_PYTHON << EOF
-                import json, os,subprocess, sys
-                from junitparser import JUnitXml
+            $BASE_PYTHON -m pip install junitparser
+            $BASE_PYTHON << EOF
+            import json, os,subprocess, sys
+            from junitparser import JUnitXml
 
-                testdir = os.path.join(os.environ["SD_ARTIFACTS_DIR"], 'test')
-                if not os.path.exists(testdir):
-                    print('No test metadata files to parse', flush=True)
-                    sys.exit(0)
+            testdir = os.path.join(os.environ["SD_ARTIFACTS_DIR"], 'test')
+            if not os.path.exists(testdir):
+                print('No test metadata files to parse', flush=True)
+                sys.exit(0)
 
-                test_failed = 0
-                test_run = 0
-                test_ok = 0
+            test_failed = 0
+            test_run = 0
+            test_ok = 0
 
-                for filename in os.listdir(testdir):
-                    if 'test' not in filename:
-                        continue
+            for filename in os.listdir(testdir):
+                if 'test' not in filename:
+                    continue
 
-                    if not filename.endswith('.xml'):
-                        continue
+                if not filename.endswith('.xml'):
+                    continue
 
-                    xml = JUnitXml.fromfile(os.path.join(testdir, filename))
-                    test_failed += xml.errors + xml.failures
-                    test_run += xml.tests - xml.skipped
+                xml = JUnitXml.fromfile(os.path.join(testdir, filename))
+                test_failed += xml.errors + xml.failures
+                test_run += xml.tests - xml.skipped
 
-                if test_run == 0:
-                    print('No tests run, not setting metadata', flush=True)
-                    sys.exit(0)
+            if test_run == 0:
+                print('No tests run, not setting metadata', flush=True)
+                sys.exit(0)
 
-                test_ok = test_run - test_failed
-                test_summary = f'{test_ok}/{test_run}'
-                print(f'meta set tests.results {test_summary}')
-                subprocess.call(['meta', 'set', 'tests.results', test_summary])
-                status = {
-                    "status": "SUCCESS",
-                    "message": f"{test_summary} tests passed"
-                }
-                job_name = os.environ.get('SD_JOB_NAME', None)
-                if job_name:
-                    job_name = job_name.split(':')[-1]
-                    print(f'meta set meta.status.{job_name}', json.dumps(status))
-                    subprocess.call(['meta', 'set', f'meta.status.{job_name}', json.dumps(status)])
-                EOF
+            test_ok = test_run - test_failed
+            test_summary = f'{test_ok}/{test_run}'
+            print(f'meta set tests.results {test_summary}')
+            subprocess.call(['meta', 'set', 'tests.results', test_summary])
+            status = {
+                "status": "SUCCESS",
+                "message": f"{test_summary} tests passed"
+            }
+            job_name = os.environ.get('SD_JOB_NAME', None)
+            if job_name:
+                job_name = job_name.split(':')[-1]
+                print(f'meta set meta.status.{job_name}', json.dumps(status))
+                subprocess.call(['meta', 'set', f'meta.status.{job_name}', json.dumps(status)])
+            EOF
         - teardown-add_coverage_metadata: |
-                $BASE_PYTHON -m pip install coverage
-                $BASE_PYTHON << EOF
-                import os, subprocess, sys
-                if not os.path.exists('.coverage'):
-                    print('No coverage data found', flush=True)
-                    sys.exit(0)
-                try:
-                    output = subprocess.check_output(['coverage', 'report'])
-                except (subprocess.CalledProcessError, FileNotFoundError):
-                    print('Not able to access coverage report, not updating coverage', flush=True)
-                    sys.exit(0)
-                lines = output.decode(errors='ignore').split(os.linesep)
+            $BASE_PYTHON -m pip install coverage
+            $BASE_PYTHON << EOF
+            import os, subprocess, sys
+            if not os.path.exists('.coverage'):
+                print('No coverage data found', flush=True)
+                sys.exit(0)
+            try:
+                output = subprocess.check_output(['coverage', 'report'])
+            except (subprocess.CalledProcessError, FileNotFoundError):
+                print('Not able to access coverage report, not updating coverage', flush=True)
+                sys.exit(0)
+            lines = output.decode(errors='ignore').split(os.linesep)
 
-                for line in [ _.strip() for _ in lines]:
-                    if line.startswith('TOTAL'):
-                        coverage_percentage = line.split()[-1].replace('%', '')
-                        print(f'meta set tests.coverage {float(coverage_percentage)}')
-                        subprocess.call(['meta', 'set', 'tests.coverage', str(float(coverage_percentage))])
-                EOF
+            for line in [ _.strip() for _ in lines]:
+                if line.startswith('TOTAL'):
+                    coverage_percentage = line.split()[-1].replace('%', '')
+                    print(f'meta set tests.coverage {float(coverage_percentage)}')
+                    subprocess.call(['meta', 'set', 'tests.coverage', str(float(coverage_percentage))])
+            EOF
         - teardown-codecov: |
-                if [ "$CODECOV_TOKEN" != "" ]; then
-                    $BASE_PYTHON -m pip install codecov .[test]
-                    codecov
-                fi
+            if [ "$CODECOV_TOKEN" != "" ]; then
+                $BASE_PYTHON -m pip install codecov .[test]
+                codecov
+            fi
