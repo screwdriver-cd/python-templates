@@ -12,7 +12,7 @@ images:
     manylinux1_64: quay.io/pypa/manylinux1_x86_64
     ubuntu: ubuntu:latest
 config:
-    template: python-2104/base
+    template: python-2104/base@latest
     order: [ begin, motd, init_os, install_dependencies, update_version, add_screwdriver_label, end, teardown-store_artifacts]
     steps:
         - update_version:

@@ -12,7 +12,7 @@ images:
     manylinux1_64: quay.io/pypa/manylinux1_x86_64
     ubuntu: ubuntu:latest
 config:
-    template: python-2104/base
+    template: python-2104/base@latest
     environment:
         MANYLINUX: True
         PUBLISH: false

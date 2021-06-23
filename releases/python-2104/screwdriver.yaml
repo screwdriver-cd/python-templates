@@ -45,7 +45,7 @@ jobs:
             PYTHON_BOOTSTRAP_SKIP_SCREWDRIVERCD: True
             TEMPLATE_DIR: templates
             TEMPLATE_TAG: stable
-            TEMPLATES: base.yaml, packaging, utility, validation
+            TEMPLATES: packaging, utility, validation
         steps:
             - init_os: |
                 sd-cmd python-2104/python_bootstrap@stable
