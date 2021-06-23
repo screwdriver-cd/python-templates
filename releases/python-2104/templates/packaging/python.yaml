@@ -14,8 +14,6 @@ images:
 config:
     template: python-2104/base@latest
     environment:
-        MANYLINUX: True
-        PUBLISH: false
         TWINE_REPOSITORY_URL: https://upload.pypi.org/legacy/
         PYROMA_MIN_SCORE: 8
         PACKAGE_TAG: True

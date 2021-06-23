@@ -67,6 +67,7 @@ def main():
 
         if args.operation == 'publish':
             command = f'./node_modules/.bin/template-tag --name {template_name} --tag {template_tag}'
+            print(f'Running command: {command}')
             try:
                 result = subprocess.run(shlex.split(command))
             except FileNotFoundError:
