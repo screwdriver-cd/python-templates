@@ -15,6 +15,6 @@ config:
     template: python-2104/base@latest
     order: [ begin, init_os, install_dependencies, set_package_env, config_preset, update_version, validate, end, teardown-store_artifacts ]
     steps:
-    - validate_code:
+    - validate:
         locked: false
         command: screwdrivercd_validate_style
