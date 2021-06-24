@@ -19,7 +19,7 @@ config:
     steps:
         - begin: echo "Starting ${SD_TEMPLATE_FULLNAME}"
         - init_os: |
-            sd-cmd exec python-2104/python_bootstrap
+            sd-cmd exec python-2104/python_bootstrap@stable
             . $SD_ARTIFACTS_DIR/env/python_bootstrap.env||/bin/true
         - setup_deploy_keys: |
             if [ ! -z "$GIT_DEPLOY_KEY" ]; then
