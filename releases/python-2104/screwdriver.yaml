@@ -39,7 +39,7 @@ jobs:
         requires: [publish_cmd]
 
     publish_templates:
-        image: 'debian:testing-slim'
+        image: 'centos:7'
         environment:
             PYTHON_BOOTSTRAP_SKIP_PYPIRUN: True
             PYTHON_BOOTSTRAP_SKIP_SCREWDRIVERCD: False
