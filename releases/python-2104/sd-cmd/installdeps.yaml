@@ -1,0 +1,13 @@
+# Copyright 2021, Oath Inc.
+# Licensed under the terms of the Apache 2.0 license.  See the LICENSE file in the project root for terms
+namespace: python-2104
+name: installdeps
+version: "2021.5.22"
+description: |
+    Install package dependencies using the screwdrivercd.installdeps file
+usage: |
+    sd-cmd exec python-2104/installdeps@<VERSION>
+maintainer: 54983+dwighthubbard@users.noreply.github.com
+format: binary # Format the command is in (binary, habitat)
+binary:
+    file: ./installdeps.sh

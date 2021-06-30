@@ -1,0 +1,20 @@
+# Copyright 2021, Oath Inc.
+# Licensed under the terms of the Apache 2.0 license.  See the LICENSE file in the project root for terms
+namespace: python-2104
+name: validate_style
+description: Validate python code against the python style guide (PEP8) using the pycodestyle tool
+version: 2021.6.23
+maintainer: 54983+dwighthubbard@users.noreply.github.com
+images:
+    manylinux2014: quay.io/pypa/manylinux2014_x86_64
+    manylinux2010: quay.io/pypa/manylinux2010_x86_64
+    manylinux1_32: quay.io/pypa/manylinux1_i686
+    manylinux1_64: quay.io/pypa/manylinux1_x86_64
+    ubuntu: ubuntu:latest
+config:
+    template: python-2104/base@latest
+    order: [ begin, init_os, install_dependencies, set_package_env, config_preset, update_version, validate, end, teardown-store_artifacts ]
+    steps:
+    - validate:
+        locked: false
+        command: screwdrivercd_validate_style

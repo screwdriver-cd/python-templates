@@ -1,0 +1,27 @@
+# Copyright 2021, Oath Inc.
+# Licensed under the terms of the Apache 2.0 license.  See the LICENSE file in the project root for terms
+namespace: python-2104
+name: validate_security
+description: Run python code static analysis using the bandit tool
+version: 2021.6.22
+maintainer: 54983+dwighthubbard@users.noreply.github.com
+images:
+    manylinux2014: quay.io/pypa/manylinux2014_x86_64
+    manylinux2010: quay.io/pypa/manylinux2010_x86_64
+    manylinux1_32: quay.io/pypa/manylinux1_i686
+    manylinux1_64: quay.io/pypa/manylinux1_x86_64
+    ubuntu: ubuntu:latest
+config:
+    template: python-2104/base@latest
+    environment:
+        SECURITY_CHECK_ENFORCING: 'True'
+        SECURITY_REPORT_FORMAT: yaml,txt
+        SECURITY_BANDIT_CONFIG_ARGS: ''
+    order: [ begin, init_os, install_dependencies, set_package_env, config_preset, update_version, bandit_config, validate, end, teardown-store_artifacts ]
+    steps:
+        - bandit_config:
+            locked: false
+            command: pypirun bandit bandit-config-generator -o .bandit.ini ${SECURITY_BANDIT_CONFIG_ARGS}
+        - validate:
+            locked: false
+            command: pypirun bandit bandit -c .bandit.ini -f txt -r ${PACKAGE_DIR}

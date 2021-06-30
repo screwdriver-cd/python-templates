@@ -1,0 +1,33 @@
+# Copyright 2021, Oath Inc.
+# Licensed under the terms of the Apache 2.0 license.  See the LICENSE file in the project root for terms
+namespace: python-2104
+name: package_python
+description: Generate a python package using setuptools
+version: '2021.6.23'
+maintainer: 54983+dwighthubbard@users.noreply.github.com
+images:
+    manylinux2014: quay.io/pypa/manylinux2014_x86_64
+    manylinux2010: quay.io/pypa/manylinux2010_x86_64
+    manylinux1_32: quay.io/pypa/manylinux1_i686
+    manylinux1_64: quay.io/pypa/manylinux1_x86_64
+    ubuntu: ubuntu:latest
+config:
+    template: python-2104/base@latest
+    environment:
+        TWINE_REPOSITORY_URL: https://upload.pypi.org/legacy/
+        PYROMA_MIN_SCORE: 8
+        PACKAGE_TAG: True
+        PACKAGE_TYPES: sdist,wheel
+    secrets:
+        - PYPI_USER
+        - PYPI_PASSWORD
+        - TEST_PYPI_USER
+        - TEST_PYPI_PASSWORD
+        - GIT_DEPLOY_KEY
+        - GIT_DEPLOY_KEY_PASSPHRASE
+    order: [begin, motd, init_os, install_dependencies, update_version, package_code, check_packages, publish, tag_release, end, teardown-store_artifacts]
+    steps:
+        - package_code: $BASE_PYTHON -m  screwdrivercd.packaging.build_python
+        - check_packages: $BASE_PYTHON -m screwdrivercd.validation.validate_package_quality
+        - publish: $BASE_PYTHON -m screwdrivercd.packaging.publish_python
+        - tag_release: $BASE_PYTHON -m screwdrivercd.repo.release

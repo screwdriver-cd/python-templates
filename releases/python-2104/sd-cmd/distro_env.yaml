@@ -1,0 +1,15 @@
+# Copyright 2021, Oath Inc.
+# Licensed under the terms of the Apache 2.0 license.  See the LICENSE file in the project root for terms
+namespace: python-2104
+name: distro_env
+version: "2021.5.22"
+description: |
+  Create a sourceable shell file to set environment variables based on Operating system distribution
+  attributes.
+usage: |
+  sd-cmd exec python-2104/distroenv@<VERSION>
+  source "$SD_ARTIFACTS_DIR/env/distro.env"
+maintainer: 54983+dwighthubbard@users.noreply.github.com
+format: binary
+binary:
+    file: ./distro_env.sh

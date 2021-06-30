@@ -1,0 +1,45 @@
+shared:
+    environment:
+        PYTHON_BOOTSTRAP_SKIP_PYPIRUN: 'True'
+        PYTHON_BOOTSTRAP_SKIP_SCREWDRIVERCD: 'True'
+    image: node:12
+
+jobs:
+    publish_cmd:
+        steps:
+            -   validate_bootstrap: sd-cmd validate -f sd-cmd/python_bootstrap.yaml
+            -   validate_distro_env: sd-cmd validate -f sd-cmd/distro_env.yaml
+            -   validate_generate_requirements: sd-cmd validate -f sd-cmd/generate_requirements.yaml
+            -   validate_pypirun: sd-cmd validate -f sd-cmd/pypirun.yaml
+            -   validate_installdeps: sd-cmd validate -f sd-cmd/installdeps.yaml
+            -   publish_bootstrap: sd-cmd publish -f sd-cmd/python_bootstrap.yaml -t stable
+            -   publish_distro_env: sd-cmd publish -f sd-cmd/distro_env.yaml -t stable
+            -   publish_generate_requirements: sd-cmd publish -f sd-cmd/generate_requirements.yaml -t stable
+            -   publish_pypirun: sd-cmd publish -f sd-cmd/pypirun.yaml -t stable
+            -   publish_installdeps: sd-cmd publish -f sd-cmd/installdeps.yaml -t stable
+        requires: [~pr, ~commit]
+
+    publish_base_template:
+        image: centos:8
+        environment:
+            PYTHON_BOOTSTRAP_SKIP_PYPIRUN: True
+            PYTHON_BOOTSTRAP_SKIP_SCREWDRIVERCD: False
+            TEMPLATE_DIR: templates
+            TEMPLATE_TAG: stable
+            TEMPLATES_BASE: base.yaml
+            TEMPLATES: packaging, utility, validation
+        steps:
+            - init_os: |
+                sd-cmd python-2104/python_bootstrap@stable
+                . $SD_ARTIFACTS_DIR/env/python_bootstrap.env
+            - install_dependencies: $BASE_PYTHON -m screwdrivercd.installdeps
+            - install: npm install screwdriver-template-main
+            - set_base_templates: |
+                ORIG_TEMPLATES="$TEMPLATES"
+                TEMPLATES="$TEMPLATES_BASE"
+            - validate_base: $BASE_PYTHON ci_scripts/process_templates.py validate
+            - publish_base: $BASE_PYTHON ci_scripts/process_templates.py publish
+            - set_templates: TEMPLATES="$ORIG_TEMPLATES"
+            - validate: $BASE_PYTHON ci_scripts/process_templates.py validate
+            - publish: $BASE_PYTHON ci_scripts/process_templates.py publish
+        requires: [publish_cmd]

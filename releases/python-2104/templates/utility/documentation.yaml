@@ -1,0 +1,66 @@
+# Copyright 2021, Oath Inc.
+# Licensed under the terms of the Apache 2.0 license.  See the LICENSE file in the project root for terms
+namespace: python-2104
+name: documentation
+description: Create documentation
+version: 2021.6.23
+maintainer: 54983+dwighthubbard@users.noreply.github.com
+images:
+    manylinux2014: quay.io/pypa/manylinux2014_x86_64
+    manylinux2010: quay.io/pypa/manylinux2010_x86_64
+    manylinux1_32: quay.io/pypa/manylinux1_i686
+    manylinux1_64: quay.io/pypa/manylinux1_x86_64
+    ubuntu: ubuntu:latest
+config:
+    template: python-2104/base@latest
+    order: [ begin, motd, init_os, install_dependencies, update_version, publish_documentation, end, teardown-store_artifacts]
+    steps:
+        - publish_documentation:
+            locked: false
+            command: |
+                LOGDIR="$SD_ARTIFACTS_DIR/logs/$SD_TEMPLATE_NAME"
+                if [ ! -e "$LOGDIR" ]; then
+                    mkdir -p "$LOGDIR"
+                fi
+
+                echo "Installing screwdrivercd documentation extras" | tee -a $LOGDIR/install.log
+                $BASE_PYTHON -m pip install -U screwdrivercd[documentation] | tee -a $LOGDIR/install.log
+
+                $BASE_PYTHON << EOF | tee -a $LOGDIR/install.log
+                import os, subprocess, sys
+                doc_formats = os.environ.get('DOCUMENTATION_FORMATS', 'mkdocs,sphinx').split(',')
+                if 'mkdocs' in doc_formats:
+                    print('Installing mkdocs and theme(s)')
+                    subprocess.call([os.environ['BASE_PYTHON'], '-m', 'pip', 'install', '--upgrade', , 'mkdocs', 'mkdocs-material', 'mkdocs-material-extensions'])
+                if 'sphinx' in doc_formats:
+                    print('Installing sphinx')
+                    subprocess.call([os.environ['BASE_PYTHON'], '-m', 'pip', 'install', '--force-reinstall', 'sphinx'])
+                EOF
+
+                echo "Checking if the repo has a python package with doc_build extras to install" | tee -a $LOGDIR/install.log
+                $BASE_PYTHON << EOF
+                import json, os, sys
+                from screwdrivercd.utility.package import PackageMetadata
+                extras = []
+                if os.path.exists('setup.py'):
+                    package = PackageMetadata()
+                    extras = list(package.metadata.get('provides_extras', set()))
+                    if 'doc_build' in extras:
+                        with open('/tmp/doc_build_has_extras', 'w') as fh:
+                            json.dump(extras, fh)
+                EOF
+
+                if [ -e "/tmp/doc_build_has_extras" ]; then
+                    echo "Installing package doc_build extras" | tee -a $LOGDIR/install.log
+                    $BASE_PYTHON -m pip install .[doc_build] 2>&1 | tee -a $LOGDIR/install.log
+                fi
+
+                $BASE_PYTHON -m screwdrivercd.documentation
+        - tag_release:
+            locked: false
+            command: |
+                if [ ! -e "setup.py" ]; then
+                    if [ "$SD_PULL_REQUEST" = "" ]; then
+                        $BASE_PYTHON -m screwdrivercd.repo.release
+                    fi
+                fi
