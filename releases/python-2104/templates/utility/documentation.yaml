@@ -64,3 +64,8 @@ config:
                         $BASE_PYTHON -m screwdrivercd.repo.release
                     fi
                 fi
+    secrets:
+    -   GIT_ACCESS_TOKEN
+    -   GIT_DEPLOY_KEY
+    -   GIT_DEPLOY_KEY_PASSPHRASE
+    
