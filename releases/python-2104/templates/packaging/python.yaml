@@ -25,8 +25,14 @@ config:
         - TEST_PYPI_PASSWORD
         - GIT_DEPLOY_KEY
         - GIT_DEPLOY_KEY_PASSPHRASE
-    order: [begin, motd, init_os, install_dependencies, update_version, package_code, check_packages, publish, tag_release, end, teardown-store_artifacts]
+    order: [begin, motd, init_os, setup_deploy_keys, install_dependencies, update_version, package_code, check_packages, publish, tag_release, end, teardown-store_artifacts]
     steps:
+        - setup_deploy_keys: |
+            if [ ! -z "$GIT_DEPLOY_KEY" ]; then
+                screwdrivercd_ssh_setup
+                eval "$(ssh-agent -s)"
+                screwdrivercd_github_deploykey
+            fi
         - package_code: $BASE_PYTHON -m  screwdrivercd.packaging.build_python
         - check_packages: $BASE_PYTHON -m screwdrivercd.validation.validate_package_quality
         - publish: $BASE_PYTHON -m screwdrivercd.packaging.publish_python
