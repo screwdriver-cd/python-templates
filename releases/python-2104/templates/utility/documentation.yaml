@@ -13,8 +13,14 @@ images:
     ubuntu: ubuntu:latest
 config:
     template: python-2104/base@latest
-    order: [ begin, motd, init_os, install_dependencies, update_version, publish_documentation, end, teardown-store_artifacts]
+    order: [ begin, motd, init_os, install_dependencies, setup_deploy_keys, update_version, publish_documentation, end, teardown-store_artifacts]
     steps:
+        - setup_deploy_keys: |
+            if [ ! -z "$GIT_DEPLOY_KEY" ]; then
+                screwdrivercd_ssh_setup
+                eval "$(ssh-agent -s)"
+                screwdrivercd_github_deploykey
+            fi
         - publish_documentation:
             locked: false
             command: |
